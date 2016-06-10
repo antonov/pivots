@@ -1,0 +1,5 @@
+{
+  "language_selector": "ul.language-selector li a",
+  "sitemap_selector": ".content .content-inner.sitemap ul li a",
+  "menu_selector": "div.layout-header div.nav-menu ul.nav a"
+}

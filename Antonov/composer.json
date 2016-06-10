@@ -1,0 +1,24 @@
+{
+  "name": "antonov/pivots",
+  "description": "Automatic pivots generator",
+  "license": "MIT",
+  "keywords": ["pivots"],
+  "authors": [
+    {
+      "name": "Artem Antonov",
+      "email": "name@domain.com"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "~6.0",
+    "scotteh/php-dom-wrapper": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.0.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Antonov\\Pivots\\": "src"
+    }
+  }
+}
