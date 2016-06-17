@@ -15,8 +15,7 @@ class Document {
     $this->getDocument()->html($html);
   }
 
-  protected function performSelection($selector) {
-    $selectors = explode(',', $selector);
+  protected function performSelection($selectors) {
     foreach ($selectors as $selector) {
       $this->matches = $this->getDocument()->find($selector);
       if(count($this->matches) > 0) {
@@ -52,32 +51,42 @@ class Document {
     return $langs;
   }
 
-  public function getUrlsListFromSitemap($sitemap_selector) {
-    $this->performSelection($sitemap_selector);
+  public function getUrlsListFromSitemap($sitemap_selector, $folder) {
+    $this->performSelection([$sitemap_selector . "[href^='" . $folder . "']"]);
     $links = [];
     foreach ($this->matches as $match) {
-      $links[] = $match->attr('href');
+      $href = $match->attr('href');
+      if (strpos($href, '.htm') !== FALSE) {
+        $href = parse_url($href, PHP_URL_PATH);
+        $links[$href] = $href;
+      }
     }
+
     return $links;
   }
 
-  public function getMenuList($menu_selector, $lang, &$links) {
+  public function getMenuList($menu_selector, $lang, &$links, $is_plain = FALSE) {
     $this->performSelection($menu_selector);
     $weight = [1 => 0, 2 => 0, 3 => 0];
     $parent = [1 => '', 2 => '', 3 => ''];
-    $level = 0;
+    $level = 1;
     foreach ($this->matches as $match) {
-      $id = md5(substr($match->attr('href'), 0 , -7));
-      if($match->parent()->hasClass('nav-item')) {
-        $level = 1;
-      } elseif ($match->parent()->hasClass('nav-tab-title')) {
-        $level = 2;
-      } elseif ($match->parent()->parent()->parent()->hasClass('nav-tab-item')){
-        $level = 3;
+      if (!$is_plain) {
+        if ($match->parent()->hasClass('nav-item')) {
+          $level = 1;
+        } elseif ($match->parent()->hasClass('nav-tab-title')) {
+          $level = 2;
+        } elseif ($match->parent()->parent()->parent()->hasClass('nav-tab-item')){
+          $level = 3;
+        } else {
+          continue;
+        }
+        $id = md5(substr($match->attr('href'), 0 , -7));
+        $parent[$level] = $id;
       } else {
-        continue;
+        $id = md5($weight[$level] + 1);
       }
-      $parent[$level] = $id;
+
       $weight[$level]++;
       $links[$id][$lang] = [
         'level' => $level,
@@ -102,17 +111,21 @@ class Document {
     $images = $this->matches->find('a img');
     if (count($images) > 0) {
       foreach ($images as $image) {
-        if ($image->parent('a')->attr('type') == 'pdf' || substr($image->parent('a')->attr('href'), -3) == 'pdf') {
-          $image->parent('a')->attr('type', 'pdf');
-          $image->remove();
+        if (count($image->parent('a')) > 0) {
+          if ($image->parent('a')->attr('type') == 'pdf' || substr($image->parent('a')->attr('href'), -3) == 'pdf') {
+            $image->parent('a')->attr('type', 'pdf');
+            $image->remove();
+          }
         }
       }
     }
     $docs = $this->matches->find('a img');
     if (count($docs) > 0) {
       foreach ($docs as $doc) {
-        if ($doc->parent('a')->attr('type') == 'docx') {
-          $doc->remove();
+        if (count($doc->parent('a')) > 0){
+          if ($doc->parent('a')->attr('type') == 'docx') {
+            $doc->remove();
+          }
         }
       }
     }

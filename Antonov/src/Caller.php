@@ -16,11 +16,13 @@ class Caller {
   protected $url;
   protected $client ;
   protected $response;
+  protected $domain;
 
-  public function __construct($url) {
+  public function __construct($url, $domain) {
     $this->setUrl($url);
+    $this->setDomain($domain);
     $this->client = new GuzzleHttp\Client([
-      'base_uri' => 'http://ec.europa.eu',
+      'base_uri' => $this->getDomain(),
     ]);
   }
 
@@ -67,6 +69,20 @@ class Caller {
 
   public function setResponse(Psr\Http\Message\ResponseInterface $response) {
     $this->response = $response;
+  }
+
+  /**
+   * @return mixed
+   */
+  public function getDomain() {
+    return $this->domain;
+  }
+
+  /**
+   * @param mixed $domain
+   */
+  public function setDomain($domain) {
+    $this->domain = $domain;
   }
 
 }
