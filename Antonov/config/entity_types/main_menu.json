@@ -1,0 +1,4 @@
+{
+    "menu_selector": ["div.layout-header div.nav-menu ul.nav a"],
+    "menu_plain": 1
+}

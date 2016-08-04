@@ -1,0 +1,25 @@
+[
+  {
+    "name":"title",
+    "selector": [".layout-content-reset .title h1 span"]
+  },
+  {
+    "name":"tabs",
+    "selector": [".layout-content-reset #tabs .euList"]
+  },
+  {
+    "name":"summary",
+    "selector": [".layout-content-reset .euAbstract"]
+  },
+  {
+    "name": "banner_content",
+    "selector": [".layout-content-reset .banner_content .euImg"],
+    "extract_image": 1
+  },
+  {
+    "name": "body",
+    "selector": [".layout-content-reset .euText"],
+    "_remove": [".content-head", "div.col.col_last div.box:not(.eu_policy)"],
+    "clean_from_icons": 1
+  }
+]

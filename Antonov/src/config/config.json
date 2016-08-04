@@ -1,9 +1,0 @@
-{
-  "url_domain": "http://domain.com",
-  "url_folder": "/domain/folder",
-  "language_selector": ["ul.language-selector li a"],
-  "sitemap_selector": [".content .content-inner.sitemap ul li a", ".content .content-inner a", ".layout-body .box.related_box ul li a"],
-  "main_menu_selector": ["div.layout-header div.nav-menu ul.nav a"],
-  "service_tools_menu_selector": ["#layout #header ul#services li a"],
-  "service_tools_menu_plain": 1
-}

@@ -1,0 +1,8 @@
+{
+  "url_domain": "http://ec.europa.eu",
+  "url_folder": "/clima/",
+  "language_selector": ["ul.language-selector li a"],
+  "sitemap_selector": [".layout-content-reset .newlook.sitemap a", ".layout-content-reset .layout-left .euMenu a"],
+  "menu_entities": ["main_menu", "service_tools"],
+  "multi_page_entities": ["common_pages"]
+}

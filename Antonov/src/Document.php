@@ -139,6 +139,13 @@ class Document {
   }
 
   protected function performExtractImage() {
+    $image = $this->matches[0]->attr('src');
+    if (!empty($image)) {
+      $this->matches[0]->text($image);
+    }
+  }
+  
+  protected function performExtractImageFromStyle() {
     $image = $this->matches[0]->attr('style');
     $pattern = '/(\/.*?\.\w{3})/i';
     $matches = [];

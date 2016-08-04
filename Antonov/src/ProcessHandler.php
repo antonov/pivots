@@ -12,8 +12,8 @@ class ProcessHandler {
   protected $caller;
 
   public function __construct($url, $type) {
-    $this->readConfig();
-    $this->caller = new Caller($url, $this->config->url_domain);
+    $this->config = Config::getInstance()->getConfig();
+    $this->caller = new Caller($this->config->url_folder.$url, $this->config->url_domain);
     $this->document = new Document();
     $this->type = $type;
   }
@@ -70,12 +70,12 @@ class ProcessHandler {
         $this->document->setDocumentHtml($this->caller->getResponseBody());
         $langs = $this->document->getAllLanguagesUrls($this->config->language_selector);
         $langs['en'] = $this->caller->getUrl();
-        $is_plain = isset($this->config->{$this->type.'_menu_plain'});
+        $is_plain = isset($this->config->{$this->type}->menu_plain);
         foreach ($langs as $lang => $lang_url) {
           $this->caller->setUrl($lang_url);
           if ($this->caller->callResource()) {
             $this->document->setDocumentHtml($this->caller->getResponseBody());
-            $this->document->getMenuList($this->config->{$this->type.'_menu_selector'}, $lang, $menu_list, $is_plain);
+            $this->document->getMenuList($this->config->{$this->type}->menu_selector, $lang, $menu_list, $is_plain);
           }
         }
         foreach ($menu_list as $id => $menu_item) {
@@ -96,7 +96,4 @@ class ProcessHandler {
 
   }
 
-  public function readConfig() {
-    $this->config = json_decode(file_get_contents( __DIR__ . './config/config.json'));
-  }
 }

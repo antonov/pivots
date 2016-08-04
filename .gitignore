@@ -1,1 +1,11 @@
-Antonov/fixtures/*
+# Ignore fixtures folder
+/Antonov/fixtures
+
+# Ignore vendor folder
+/Antonov/vendor
+
+# Ignore IDE folder
+/.idea
+/main.php
+/Antonov/src/fixtures/organic_pages
+/Antonov/src/fixtures/service_tools

@@ -37,7 +37,8 @@ class Pivot {
 
 
   private function readConfig($type) {
-    $this->fields_config = json_decode(file_get_contents( __DIR__ . './config/types/' . $type . '.json'));
+    $config = Config::getInstance()->getConfig();
+    $this->fields_config = $config->{$type};
   }
 
   public function getFieldConfig(){
@@ -47,7 +48,7 @@ class Pivot {
   }
 
   public function save() {
-    $path = __DIR__ . './fixtures/' . $this->typeProperty;
+    $path = __DIR__ . '/../fixtures/' . $this->typeProperty;
     if (!file_exists($path)) {
       mkdir($path, 0777, TRUE);
     }
