@@ -1,8 +1,6 @@
 <?php
 
 namespace Antonov\Pivots;
-
-
 class ProcessHandler {
   protected $counter = 0;
   protected $type;
@@ -11,6 +9,12 @@ class ProcessHandler {
   protected $config;
   protected $caller;
 
+  /**
+  * Loads configuration, instantiate caller and document wrappers.
+  *
+  * @param $url string URL to download (e.g. sitemap/index_en.htm )
+  * @param $type string Entity type to extract.
+  */
   public function __construct($url, $type) {
     $this->config = Config::getInstance()->getConfig();
     $this->caller = new Caller($this->config->url_folder.$url, $this->config->url_domain);
@@ -18,6 +22,9 @@ class ProcessHandler {
     $this->type = $type;
   }
 
+  /**
+  * Extract the content type.
+  */
   public function launch(){
     if (isset($this->config->sitemap_selector)) {
       $this->caller->callResource();
@@ -62,6 +69,10 @@ class ProcessHandler {
     }
   }
 
+  /**
+  * Extract the Menu.
+  * //TODO: Currently works for service_tools support, main_menu should have an implementation. 
+  */
   public function launchMenu(){
     $menu_list = [];
 
@@ -93,7 +104,6 @@ class ProcessHandler {
         }
       }
     }
-
   }
 
 }

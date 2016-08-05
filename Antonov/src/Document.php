@@ -4,17 +4,34 @@ namespace Antonov\Pivots;
 use DOMWrap;
 
 class Document {
+  /** @var $document DOMWrap\Document **/
   protected $document;
+  /** @var $matches **/
   protected $matches;
 
+  /**
+  * Create a new Document for perform markup manipulation
+  */
   public function __construct() {
     $this->setDocument(new DOMWrap\Document());
   }
 
+  /**
+  * Once the content is extracted with caller set the HTML content in DOM wrapper.
+  *  
+  * @param $html string Set the html of the document object
+  */
   public function setDocumentHtml($html) {
     $this->getDocument()->html($html);
   }
 
+  /**
+  * Perform a selection on HTML markup with provided array of valid CSS3 selectors.
+  *
+  * @param $selectors array Array with valid CSS3 selectors.
+  *
+  * @return bool If selection has matches returns TRUE, otherwise FALSE. 
+  */
   protected function performSelection($selectors) {
     foreach ($selectors as $selector) {
       $this->matches = $this->getDocument()->find($selector);
@@ -26,6 +43,13 @@ class Document {
     return count($this->matches) > 0;
   }
 
+  /**
+  * Perform markup manipulations on extracted field content. 
+  * 
+  * @param $field stdClass Object with a field configuration
+  *
+  * @return $string Returns processed markup.
+  */
   public function applyFieldSettings($field) {
     if ($this->performSelection($field->selector)) {
       if(isset($field->remove)) {
@@ -42,6 +66,13 @@ class Document {
     }
   }
 
+  /**
+  * Returns language versions for the current content.
+  *
+  * @param $language_selector
+  *
+  * @return array Array of languages ['en' => 'index_en.htm'...]
+  */
   public function getAllLanguagesUrls($language_selector) {
     $this->performSelection($language_selector);
     $langs = [];
@@ -51,6 +82,14 @@ class Document {
     return $langs;
   }
 
+  /**
+  * Return a list of URIs from the sitemap page.
+  *
+  * @param $sitemap_selector string CSS3 Selector to retrieve website links. 
+  * @param $folder string Folder of the domain to make a match and get only current website links.
+  *
+  * @return $links array Array of links.
+  */
   public function getUrlsListFromSitemap($sitemap_selector, $folder) {
     $this->performSelection([$sitemap_selector . "[href^='" . $folder . "']"]);
     $links = [];
@@ -65,6 +104,16 @@ class Document {
     return $links;
   }
 
+  /**
+  * Parse the menu and create an array structure with links.
+  *
+  * @param $menu_selector string CSS3 selector to get the links.
+  * @param $lang string Current request language to store the link.
+  * @param $links array Previous array of links, on each request it will store the language version of the links in this array.
+  * @param $is_plain bool Define if the current menu is have no depth
+  *
+  * @return $links array Array of links.
+  */
   public function getMenuList($menu_selector, $lang, &$links, $is_plain = FALSE) {
     $this->performSelection($menu_selector);
     $weight = [1 => 0, 2 => 0, 3 => 0];
@@ -101,12 +150,22 @@ class Document {
     return $links;
   }
 
+  /**
+  * Get the markup from the current selector match.
+  * 
+  * @return $markup string The HTML markup or text from queried match.
+  */
   protected function getProcessedMarkup () {
     $value = $this->matches[0]->html();
     $value = empty($value) ? $this->matches[0]->text() : $value;
     return $value;
   }
 
+  /**
+  * Remove language icons from the markup.
+  *
+  * @return void
+  */
   protected function performCleanFromIcons() {
     $images = $this->matches->find('a img');
     if (count($images) > 0) {
@@ -132,12 +191,20 @@ class Document {
     $this->matches->find('a.ws-ico')->remove();
   }
 
+  /**
+  * Remove unnecesary markup from the HTML content.
+  *
+  * @param $selectors array Array of CSS3 selectors to remove from the match.
+  */
   protected function performRemoveUnnecessaryMarkup($selectors) {
     foreach ($selectors as $selector) {
       $this->matches->find($selector)->remove();
     }
   }
 
+  /**
+  * Extract image path from HTML img tag. 
+  */
   protected function performExtractImage() {
     $image = $this->matches[0]->attr('src');
     if (!empty($image)) {
@@ -145,6 +212,9 @@ class Document {
     }
   }
   
+  /**
+  * Extract image path from inline css style.
+  */
   protected function performExtractImageFromStyle() {
     $image = $this->matches[0]->attr('style');
     $pattern = '/(\/.*?\.\w{3})/i';
@@ -155,12 +225,15 @@ class Document {
     }
   }
 
+  /**
+  * Allows to change at runtime the HTML of the document.
+  */
   protected function setDocument(DOMWrap\Document $document) {
     $this->document = $document;
   }
 
   /**
-   * @return DOMWrap\Document
+   * @return DOMWrap\Document Returns DOM document object.
    */
   protected function getDocument(){
     return $this->document;

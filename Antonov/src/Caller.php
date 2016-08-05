@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: antartem
- * Date: 06/06/2016
- * Time: 11:23
- */
 
 namespace Antonov\Pivots;
 use GuzzleHttp;
@@ -18,6 +12,11 @@ class Caller {
   protected $response;
   protected $domain;
 
+  /**
+  * Constructor function which defines the URL, domain name and instantiate the Guzzle client.
+  * @param string $url URL to request 
+  * @param string $domain Domain to request (e.g. http://domain.com)
+  */
   public function __construct($url, $domain) {
     $this->setUrl($url);
     $this->setDomain($domain);
@@ -27,8 +26,9 @@ class Caller {
   }
 
   /**
-   * Return resource
-   * @return bool
+   * Perform the request and save the response.
+   *
+   * @return bool If status is 200 (OK) it will save the response
    */
   public function callResource() {
     try {
@@ -42,44 +42,73 @@ class Caller {
     return FALSE;
   }
 
+  /**
+   * Return request body string. 
+   *
+   * @return string HTML of the performed request.
+   */
   public function getResponseBody(){
     return (string) $this->getResponse()->getBody();
   }
 
   /**
-   * Get Client
+   * Get client object to perform the request.
+   *
    * @return GuzzleHttp\Client
    */
   public function getClient() {
     return $this->client;
   }
 
+  /**
+   * Set current URL to extract.
+   *
+   * @param string $url URL address to extract (e.g. /section/index_en.htm)
+   */
   public function setUrl($url) {
     $this->url = $url;
   }
 
+  /**
+   * Return current extraction URL.
+   *
+   * @return string Current extracted URL.
+   */
   public function getUrl() {
     return $this->url;
   }
 
-  /** @return Psr\Http\Message\ResponseInterface */
+  /**
+  * Return the request response.
+  * 
+  * @return Psr\Http\Message\ResponseInterface 
+  */
   public function getResponse() {
     return $this->response;
   }
 
+  /**
+  * Set the response of requested data.
+  *
+  * @param Psr\Http\Message\ResponseInterface $response Set the respone object from performed request.
+  */
   public function setResponse(Psr\Http\Message\ResponseInterface $response) {
     $this->response = $response;
   }
 
   /**
-   * @return mixed
+   * Returns the domain of current request.
+   *
+   * @return string
    */
   public function getDomain() {
     return $this->domain;
   }
 
   /**
-   * @param mixed $domain
+   * Set the domain name for the current request.
+   *
+   * @param string $domain
    */
   public function setDomain($domain) {
     $this->domain = $domain;

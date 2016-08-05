@@ -2,20 +2,22 @@
 
 namespace Antonov\Pivots;
 
-
 class Config
 {
     /**
-     * @var Config The reference to *Config* instance of this class
+     * @var $instance Config The reference to *Config* instance of this class
      */
     private static $instance;
 
+    /**
+     * @var $config stdClass Contains an object with parsed configuration.
+     */
     private $config;
     
     /**
-     * Returns the *Config* instance of this class.
+     * Returns the instance of this class.
      *
-     * @return Singleton The *Singleton* instance.
+     * @return Config The *Singleton* instance.
      */
     public static function getInstance()
     {
@@ -27,8 +29,7 @@ class Config
     }
 
     /**
-     * Protected constructor to prevent creating a new instance of the
-     * *Singleton* via the `new` operator from outside of this class.
+     * Read the configuration files under /config directory
      */
     protected function __construct()
     {
@@ -44,27 +45,12 @@ class Config
         }
     }
 
+    /**
+    * Returns the configuration object.
+    * 
+    * @return stdClass
+    */
     public function getConfig() {
         return $this->config;
-    }
-
-    /**
-     * Private clone method to prevent cloning of the instance of the
-     * *Singleton* instance.
-     *
-     * @return void
-     */
-    private function __clone()
-    {
-    }
-
-    /**
-     * Private unserialize method to prevent unserializing of the *Singleton*
-     * instance.
-     *
-     * @return void
-     */
-    private function __wakeup()
-    {
     }
 }
